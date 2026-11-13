@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Obsidian Color Studio — Step 3</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #1e1e2e;
+      color: #cdd6f4;
+      overflow-x: hidden;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    }
+    button, input, select {
+      touch-action: manipulation;
+    }
+    input[type="color"] {
+      -webkit-appearance: none;
+      appearance: none;
+      border: none;
+      padding: 0;
+      background: none;
+      cursor: pointer;
+    }
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    input[type="color"]::-webkit-color-swatch {
+      border: 2px solid rgba(255, 255, 255, 0.16);
+      border-radius: 0.75rem;
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased selection:bg-purple-500/30">
+  <div class="max-w-3xl mx-auto px-3 py-4 sm:px-6 sm:py-8">
+
+    <!-- HEADER & TABS -->
+    <header class="mb-5 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div>
+        <div class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-purple-400 mb-1">
+          <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+          Step 3 · Colors, Markdown &amp; Lucide Icons
+        </div>
+        <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Obsidian Color Studio</h1>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="inline-flex bg-[#262637] border border-white/10 rounded-xl p-1 self-start sm:self-auto" aria-label="App sections">
+        <button
+          id="tabColors"
+          type="button"
+          class="min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-purple-600 text-white transition cursor-pointer"
+        >
+          Colors &amp; Export
+        </button>
+        <button
+          id="tabIcons"
+          type="button"
+          class="min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:text-white transition cursor-pointer"
+        >
+          Lucide Icons
+        </button>
+      </nav>
+    </header>
+
+    <!-- VIEW 1: COLORS & EXPORT -->
+    <main id="viewColors">
+      <!-- 1. COLOR PICKER & LIVE PREVIEW -->
+      <section class="bg-[#262637] border border-white/10 rounded-2xl p-4 sm:p-5 mb-5 sm:mb-6 shadow-lg">
+        <div class="flex flex-col md:flex-row gap-4 sm:gap-5 items-stretch md:items-center">
+          <!-- Color Picker + HEX Input -->
+          <div class="flex items-center gap-3.5 sm:gap-4">
+            <input
+              id="colorPicker"
+              type="color"
+              value="#8b5cf6"
+              aria-label="Choose a color"
+              class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl shrink-0"
+            />
+            <div class="flex-1 min-w-0">
+              <label for="hexInput" class="block text-xs font-medium text-slate-400 mb-1">HEX Code</label>
+              <input
+                id="hexInput"
+                type="text"
+                value="#8b5cf6"
+                maxlength="7"
+                spellcheck="false"
+                autocomplete="off"
+                class="mono w-full sm:w-32 bg-[#1e1e2e] border border-white/10 rounded-lg px-3 py-2 text-base sm:text-sm text-white focus:outline-none focus:border-purple-400"
+              />
+            </div>
+          </div>
+
+          <!-- Live Color Codes (HEX, RGB, HSL) -->
+          <div class="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <button
+              type="button"
+              data-copy-target="hex"
+              class="copy-code-btn min-h-[44px] text-left bg-[#1e1e2e] hover:bg-[#191926] active:bg-[#151521] border border-white/10 rounded-xl px-3 py-2.5 transition group"
+            >
+              <div class="flex items-center justify-between text-[11px] text-slate-400 mb-0.5">
+                <span>HEX</span>
+                <span class="text-purple-400 opacity-75 sm:opacity-0 sm:group-hover:opacity-100 transition">Copy</span>
+              </div>
+              <div id="codeHex" class="mono text-xs sm:text-sm text-white truncate">#8B5CF6</div>
+            </button>
+
+            <button
+              type="button"
+              data-copy-target="rgb"
+              class="copy-code-btn min-h-[44px] text-left bg-[#1e1e2e] hover:bg-[#191926] active:bg-[#151521] border border-white/10 rounded-xl px-3 py-2.5 transition group"
+            >
+              <div class="flex items-center justify-between text-[11px] text-slate-400 mb-0.5">
+                <span>RGB</span>
+                <span class="text-purple-400 opacity-75 sm:opacity-0 sm:group-hover:opacity-100 transition">Copy</span>
+              </div>
+              <div id="codeRgb" class="mono text-xs sm:text-sm text-white truncate">rgb(139, 92, 246)</div>
+            </button>
+
+            <button
+              type="button"
+              data-copy-target="hsl"
+              class="copy-code-btn min-h-[44px] text-left bg-[#1e1e2e] hover:bg-[#191926] active:bg-[#151521] border border-white/10 rounded-xl px-3 py-2.5 transition group"
+            >
+              <div class="flex items-center justify-between text-[11px] text-slate-400 mb-0.5">
+                <span>HSL</span>
+                <span class="text-purple-400 opacity-75 sm:opacity-0 sm:group-hover:opacity-100 transition">Copy</span>
+              </div>
+              <div id="codeHsl" class="mono text-xs sm:text-sm text-white truncate">hsl(258, 90%, 66%)</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Nickname & Save Form -->
+        <form id="saveColorForm" class="mt-4 sm:mt-5 pt-4 border-t border-white/10 flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+          <input
+            id="nicknameInput"
+            type="text"
+            placeholder="Give this color a nickname (e.g., Obsidian Accent)..."
+            class="flex-1 min-w-0 bg-[#1e1e2e] border border-white/10 rounded-xl px-4 py-2.5 text-base sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-purple-400"
+          />
+          <button
+            type="submit"
+            class="min-h-[44px] bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white font-medium text-sm px-5 py-2.5 rounded-xl transition shrink-0 cursor-pointer"
+          >
+            + Save Color
+          </button>
+        </form>
+      </section>
+
+      <!-- 2. SAVED COLORS LIST -->
+      <section class="bg-[#262637] border border-white/10 rounded-2xl p-4 sm:p-5 mb-5 sm:mb-6 shadow-lg">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <h2 class="text-base font-semibold text-white">
+            Saved Colors <span id="savedCount" class="ml-1.5 text-xs font-normal text-slate-400">(0)</span>
+          </h2>
+          <span class="text-xs text-slate-400">Tap any code pill to copy</span>
+        </div>
+
+        <div id="savedList" class="space-y-2.5"></div>
+      </section>
+
+      <!-- 3. OBSIDIAN MARKDOWN EXPORT -->
+      <section class="bg-[#262637] border border-white/10 rounded-2xl p-4 sm:p-5 shadow-lg">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-base font-semibold text-white">Export to Obsidian Markdown</h2>
+            <p class="text-xs text-slate-400">Includes YAML frontmatter and ready-to-paste formatting.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <label for="exportFormat" class="sr-only">Export format</label>
+            <select
+              id="exportFormat"
+              class="min-h-[40px] bg-[#1e1e2e] border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-400 cursor-pointer"
+            >
+              <option value="table">Table + Swatches</option>
+              <option value="css">CSS Variables Snippet</option>
+              <option value="callouts">Obsidian Callouts</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Live Markdown Preview -->
+        <pre
+          id="markdownPreview"
+          class="mono text-xs leading-relaxed bg-[#1e1e2e] border border-white/10 rounded-xl p-3.5 text-slate-200 overflow-x-auto max-h-60 mb-4 whitespace-pre"
+        ></pre>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-2.5">
+          <button
+            id="copyMarkdownBtn"
+            type="button"
+            class="min-h-[44px] flex-1 bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white font-medium text-sm px-4 py-2.5 rounded-xl transition cursor-pointer"
+          >
+            Copy Markdown
+          </button>
+          <button
+            id="downloadMarkdownBtn"
+            type="button"
+            class="min-h-[44px] flex-1 bg-[#1e1e2e] hover:bg-[#191926] active:bg-[#151521] border border-white/15 text-slate-100 font-medium text-sm px-4 py-2.5 rounded-xl transition cursor-pointer"
+          >
+            Download .md File
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- VIEW 2: LUCIDE ICONS BROWSER -->
+    <section id="viewIcons" class="hidden bg-[#262637] border border-white/10 rounded-2xl p-4 sm:p-5 shadow-lg">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <div>
+          <h2 class="text-base font-semibold text-white">
+            Obsidian Lucide Icons <span id="iconCount" class="ml-1.5 text-xs font-normal text-slate-400">(0)</span>
+          </h2>
+          <p class="text-xs text-slate-400">Tap any icon to copy its Obsidian name or CSS snippet.</p>
+        </div>
+
+        <!-- Tint Preview Toggle -->
+        <label class="inline-flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
+          <input id="tintIconsToggle" type="checkbox" checked class="accent-purple-500 w-4 h-4 rounded cursor-pointer" />
+          <span>Preview in active color</span>
+          <span id="tintDot" class="w-3.5 h-3.5 rounded-full border border-white/20 inline-block" style="background-color: #8B5CF6;"></span>
+        </label>
+      </div>
+
+      <!-- Search + Copy Format Controls -->
+      <div class="flex flex-col sm:flex-row gap-2.5 mb-4">
+        <div class="relative flex-1">
+          <input
+            id="iconSearchInput"
+            type="search"
+            placeholder="Search icons (e.g., folder, book, star, calendar)..."
+            class="w-full bg-[#1e1e2e] border border-white/10 rounded-xl px-4 py-2.5 text-base sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-purple-400"
+          />
+        </div>
+        <select
+          id="iconCopyFormat"
+          aria-label="Icon copy format"
+          class="min-h-[42px] bg-[#1e1e2e] border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-400 cursor-pointer"
+        >
+          <option value="name">Copy: icon-name</option>
+          <option value="callout">Copy: --callout-icon</option>
+          <option value="lucidePrefix">Copy: lucide-icon-name</option>
+        </select>
+      </div>
+
+      <!-- Icon Grid -->
+      <div id="iconGrid" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2.5"></div>
+
+      <!-- Load More -->
+      <div id="iconLoadMoreWrap" class="mt-4 text-center hidden">
+        <button
+          id="iconLoadMoreBtn"
+          type="button"
+          class="min-h-[42px] bg-[#1e1e2e] hover:bg-[#191926] border border-white/15 text-slate-200 text-xs font-medium px-5 py-2 rounded-xl transition cursor-pointer"
+        >
+          Load More Icons
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div
+    id="toast"
+    class="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-5 sm:bottom-5 text-center sm:text-left bg-slate-900 border border-purple-500/40 text-white text-xs font-medium px-4 py-2.5 rounded-xl shadow-xl opacity-0 pointer-events-none transition-opacity duration-200"
+  >
+    Copied to clipboard!
+  </div>
+
+  <script>
+    // --- STATE ---
+    const STORAGE_KEY = 'obsidian_color_studio_v1';
+    const DEFAULT_COLORS = [
+      { id: 'c1', nickname: 'Obsidian Purple', hex: '#8B5CF6' },
+      { id: 'c2', nickname: 'Callout Info Blue', hex: '#38BDF8' },
+      { id: 'c3', nickname: 'Success Mint', hex: '#34D399' }
+    ];
+    const FALLBACK_ICONS = [
+      'alert-circle', 'archive', 'arrow-right', 'bell', 'book', 'book-open',
+      'bookmark', 'calendar', 'check', 'check-circle-2', 'clock', 'code',
+      'compass', 'copy', 'database', 'edit', 'eye', 'file-text', 'filter',
+      'flame', 'folder', 'folder-open', 'globe', 'hash', 'heart', 'home',
+      'info', 'layers', 'lightbulb', 'link', 'list', 'lock', 'mail', 'map',
+      'menu', 'moon', 'palette', 'pen-tool', 'pin', 'plus', 'search',
+      'settings', 'shield', 'sparkles', 'star', 'sun', 'tag', 'terminal',
+      'trash-2', 'zap'
+    ];
+
+    let currentHex = '#8B5CF6';
+    let savedColors = loadColors();
+    let toastTimer = null;
+    let allIconNames = [];
+    let iconLimit = 72;
+
+    // --- DOM ELEMENTS ---
+    const tabColors = document.getElementById('tabColors');
+    const tabIcons = document.getElementById('tabIcons');
+    const viewColors = document.getElementById('viewColors');
+    const viewIcons = document.getElementById('viewIcons');
+
+    const colorPicker = document.getElementById('colorPicker');
+    const hexInput = document.getElementById('hexInput');
+    const codeHex = document.getElementById('codeHex');
+    const codeRgb = document.getElementById('codeRgb');
+    const codeHsl = document.getElementById('codeHsl');
+    const saveColorForm = document.getElementById('saveColorForm');
+    const nicknameInput = document.getElementById('nicknameInput');
+    const savedList = document.getElementById('savedList');
+    const savedCount = document.getElementById('savedCount');
+    const exportFormat = document.getElementById('exportFormat');
+    const markdownPreview = document.getElementById('markdownPreview');
+    const copyMarkdownBtn = document.getElementById('copyMarkdownBtn');
+    const downloadMarkdownBtn = document.getElementById('downloadMarkdownBtn');
+
+    const iconSearchInput = document.getElementById('iconSearchInput');
+    const iconCopyFormat = document.getElementById('iconCopyFormat');
+    const tintIconsToggle = document.getElementById('tintIconsToggle');
+    const tintDot = document.getElementById('tintDot');
+    const iconGrid = document.getElementById('iconGrid');
+    const iconCount = document.getElementById('iconCount');
+    const iconLoadMoreWrap = document.getElementById('iconLoadMoreWrap');
+    const iconLoadMoreBtn = document.getElementById('iconLoadMoreBtn');
+
+    const toast = document.getElementById('toast');
+
+    // --- TAB NAVIGATION ---
+    function switchTab(tab) {
+      const isColors = tab === 'colors';
+      viewColors.classList.toggle('hidden', !isColors);
+      viewIcons.classList.toggle('hidden', isColors);
+
+      tabColors.className = isColors
+        ? 'min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-purple-600 text-white transition cursor-pointer'
+        : 'min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:text-white transition cursor-pointer';
+
+      tabIcons.className = !isColors
+        ? 'min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-purple-600 text-white transition cursor-pointer'
+        : 'min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:text-white transition cursor-pointer';
+
+      if (!isColors) {
+        renderIcons();
+      }
+    }
+
+    // --- STORAGE HELPERS ---
+    function loadColors() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch (e) {
+        // Ignore storage errors in restricted environments
+      }
+      return DEFAULT_COLORS.slice();
+    }
+
+    function persistColors() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(savedColors));
+      } catch (e) {
+        // Ignore storage errors
+      }
+    }
+
+    // --- COLOR CONVERSION ---
+    function normalizeHex(val) {
+      const cleaned = val.trim().replace(/^#/, '');
+      if (/^[0-9a-fA-F]{6}$/.test(cleaned)) {
+        return '#' + cleaned.toUpperCase();
+      }
+      return null;
+    }
+
+    function hexToRgb(hex) {
+      const clean = hex.replace('#', '');
+      const r = parseInt(clean.slice(0, 2), 16);
+      const g = parseInt(clean.slice(2, 4), 16);
+      const b = parseInt(clean.slice(4, 6), 16);
+      return { r, g, b };
+    }
+
+    function rgbToHsl(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      let h = 0, s = 0;
+      const l = (max + min) / 2;
+
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+
+      return {
+        h: Math.round(h * 360),
+        s: Math.round(s * 100),
+        l: Math.round(l * 100)
+      };
+    }
+
+    function getColorFormats(hex) {
+      const { r, g, b } = hexToRgb(hex);
+      const { h, s, l } = rgbToHsl(r, g, b);
+      return {
+        hex: hex.toUpperCase(),
+        rgb: `rgb(${r}, ${g}, ${b})`,
+        hsl: `hsl(${h}, ${s}%, ${l}%)`
+      };
+    }
+
+    // --- MARKDOWN EXPORT GENERATOR ---
+    function slugify(text) {
+      return text
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'color';
+    }
+
+    function generateMarkdown() {
+      const today = new Date().toISOString().slice(0, 10);
+      const frontmatter = [
+        '---',
+        'tags:',
+        '  - obsidian',
+        '  - color-palette',
+        `updated: ${today}`,
+        '---',
+        '',
+        '# Obsidian Color Palette',
+        ''
+      ].join('\n');
+
+      if (savedColors.length === 0) {
+        return frontmatter + '_No saved colors yet._\n';
+      }
+
+      const mode = exportFormat.value;
+
+      if (mode === 'css') {
+        const vars = savedColors.map((item) => {
+          const formats = getColorFormats(item.hex);
+          return `  --color-${slugify(item.nickname)}: ${formats.hex}; /* ${formats.rgb} */`;
+        });
+        return frontmatter + [
+          '```css',
+          ':root {',
+          ...vars,
+          '}',
+          '```',
+          ''
+        ].join('\n');
+      }
+
+      if (mode === 'callouts') {
+        const blocks = savedColors.map((item) => {
+          const formats = getColorFormats(item.hex);
+          return [
+            `> [!note] ${item.nickname}`,
+            `> - **HEX:** \`${formats.hex}\``,
+            `> - **RGB:** \`${formats.rgb}\``,
+            `> - **HSL:** \`${formats.hsl}\``
+          ].join('\n');
+        });
+        return frontmatter + blocks.join('\n\n') + '\n';
+      }
+
+      const header = [
+        '| Swatch | Nickname | HEX | RGB | HSL |',
+        '| :---: | :--- | :--- | :--- | :--- |'
+      ];
+      const rows = savedColors.map((item) => {
+        const formats = getColorFormats(item.hex);
+        const safeName = item.nickname.replace(/\|/g, '\\|');
+        const swatch = `<span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:${formats.hex};vertical-align:middle;"></span>`;
+        return `| ${swatch} | ${safeName} | \`${formats.hex}\` | \`${formats.rgb}\` | \`${formats.hsl}\` |`;
+      });
+
+      return frontmatter + header.concat(rows).join('\n') + '\n';
+    }
+
+    function renderMarkdownPreview() {
+      markdownPreview.textContent = generateMarkdown();
+    }
+
+    // --- LUCIDE ICONS HELPERS ---
+    function pascalToKebab(name) {
+      return name
+        .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+        .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
+        .replace(/([a-zA-Z])([0-9])/g, '$1-$2')
+        .toLowerCase();
+    }
+
+    function initIconList() {
+      if (window.lucide && window.lucide.icons) {
+        allIconNames = Object.keys(window.lucide.icons)
+          .map(pascalToKebab)
+          .sort();
+      } else {
+        allIconNames = FALLBACK_ICONS.slice();
+      }
+    }
+
+    function formatIconCopy(iconName) {
+      const mode = iconCopyFormat.value;
+      if (mode === 'callout') return `--callout-icon: lucide-${iconName};`;
+      if (mode === 'lucidePrefix') return `lucide-${iconName}`;
+      return iconName;
+    }
+
+    function renderIcons() {
+      if (allIconNames.length === 0) initIconList();
+      const query = iconSearchInput.value.trim().toLowerCase();
+      const matches = query
+        ? allIconNames.filter((name) => name.includes(query))
+        : allIconNames;
+
+      iconCount.textContent = `(${matches.length})`;
+      const visible = matches.slice(0, iconLimit);
+      const iconColor = tintIconsToggle.checked ? currentHex : '#cbd5e1';
+
+      if (visible.length === 0) {
+        iconGrid.innerHTML = `
+          <div class="col-span-full text-center py-8 text-sm text-slate-400 border border-dashed border-white/10 rounded-xl">
+            No icons match "${escapeHtml(query)}".
+          </div>`;
+        iconLoadMoreWrap.classList.add('hidden');
+        return;
+      }
+
+      iconGrid.innerHTML = '';
+      visible.forEach((iconName) => {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'flex flex-col items-center justify-center gap-2 min-h-[82px] bg-[#1e1e2e] hover:bg-[#191926] active:bg-[#151521] border border-white/10 hover:border-purple-400/50 rounded-xl p-2.5 transition cursor-pointer group';
+        card.innerHTML = `
+          <i data-lucide="${iconName}" class="w-5 h-5 shrink-0" style="color: ${iconColor};"></i>
+          <span class="mono text-[10px] text-slate-300 group-hover:text-white truncate w-full text-center">${iconName}</span>
+        `;
+        card.addEventListener('click', () => {
+          const textToCopy = formatIconCopy(iconName);
+          copyText(textToCopy, `Copied ${textToCopy}`);
+        });
+        iconGrid.appendChild(card);
+      });
+
+      if (window.lucide && window.lucide.createIcons) {
+        window.lucide.createIcons();
+      }
+
+      if (matches.length > iconLimit) {
+        iconLoadMoreWrap.classList.remove('hidden');
+        iconLoadMoreBtn.textContent = `Load More (${matches.length - iconLimit} remaining)`;
+      } else {
+        iconLoadMoreWrap.classList.add('hidden');
+      }
+    }
+
+    // --- CLIPBOARD & TOAST ---
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.remove('opacity-0');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add('opacity-0');
+      }, 1800);
+    }
+
+    function copyText(text, customToast) {
+      const msg = customToast || `Copied ${text}`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(msg);
+        }).catch(() => fallbackCopy(text, msg));
+      } else {
+        fallbackCopy(text, msg);
+      }
+    }
+
+    function fallbackCopy(text, msg) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast(msg);
+      } catch (e) {
+        showToast('Could not copy');
+      }
+      document.body.removeChild(ta);
+    }
+
+    function downloadMarkdownFile() {
+      const content = generateMarkdown();
+      const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'obsidian-color-palette.md';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Downloaded obsidian-color-palette.md');
+    }
+
+    // --- RENDER ---
+    function updateActiveColor(hex) {
+      currentHex = hex.toUpperCase();
+      colorPicker.value = currentHex;
+      hexInput.value = currentHex;
+      tintDot.style.backgroundColor = currentHex;
+      const formats = getColorFormats(currentHex);
+      codeHex.textContent = formats.hex;
+      codeRgb.textContent = formats.rgb;
+      codeHsl.textContent = formats.hsl;
+    }
+
+    function renderSavedList() {
+      savedCount.textContent = `(${savedColors.length})`;
+      if (savedColors.length === 0) {
+        savedList.innerHTML = `
+          <div class="text-center py-8 text-sm text-slate-400 border border-dashed border-white/10 rounded-xl">
+            No saved colors yet. Pick a color above and give it a nickname!
+          </div>`;
+        renderMarkdownPreview();
+        return;
+      }
+
+      savedList.innerHTML = '';
+      savedColors.forEach((item) => {
+        const formats = getColorFormats(item.hex);
+        const row = document.createElement('div');
+        row.className = 'flex flex-col md:flex-row md:items-center justify-between gap-3 bg-[#1e1e2e] border border-white/10 rounded-xl p-3';
+
+        row.innerHTML = `
+          <div class="flex items-center gap-3 min-w-0">
+            <button
+              type="button"
+              title="Load into picker"
+              class="swatch-btn w-11 h-11 sm:w-10 sm:h-10 rounded-lg border border-white/15 shrink-0 cursor-pointer transition hover:scale-105"
+              style="background-color: ${formats.hex};"
+            ></button>
+            <div class="min-w-0 flex-1">
+              <div class="font-medium text-sm text-white truncate">${escapeHtml(item.nickname)}</div>
+              <div class="text-[11px] text-slate-400">Tap swatch to preview</div>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button type="button" class="pill-copy mono min-h-[38px] sm:min-h-0 text-xs sm:text-[11px] bg-[#262637] hover:bg-purple-600/30 active:bg-purple-600/40 border border-white/10 rounded-lg px-2.5 py-1.5 text-slate-200 transition cursor-pointer" data-val="${formats.hex}">${formats.hex}</button>
+            <button type="button" class="pill-copy mono min-h-[38px] sm:min-h-0 text-xs sm:text-[11px] bg-[#262637] hover:bg-purple-600/30 active:bg-purple-600/40 border border-white/10 rounded-lg px-2.5 py-1.5 text-slate-200 transition cursor-pointer" data-val="${formats.rgb}">${formats.rgb}</button>
+            <button type="button" class="pill-copy mono min-h-[38px] sm:min-h-0 text-xs sm:text-[11px] bg-[#262637] hover:bg-purple-600/30 active:bg-purple-600/40 border border-white/10 rounded-lg px-2.5 py-1.5 text-slate-200 transition cursor-pointer" data-val="${formats.hsl}">${formats.hsl}</button>
+            <button type="button" title="Delete color" aria-label="Delete color" class="delete-btn min-h-[38px] min-w-[38px] sm:min-h-0 sm:min-w-0 text-xs text-slate-400 hover:text-rose-400 px-2.5 py-1.5 rounded-lg hover:bg-rose-500/10 transition cursor-pointer">✕</button>
+          </div>
+        `;
+
+        row.querySelector('.swatch-btn').addEventListener('click', () => {
+          updateActiveColor(formats.hex);
+          showToast(`Loaded ${item.nickname}`);
+        });
+
+        row.querySelectorAll('.pill-copy').forEach((btn) => {
+          btn.addEventListener('click', () => copyText(btn.dataset.val));
+        });
+
+        row.querySelector('.delete-btn').addEventListener('click', () => {
+          savedColors = savedColors.filter((c) => c.id !== item.id);
+          persistColors();
+          renderSavedList();
+          showToast(`Removed ${item.nickname}`);
+        });
+
+        savedList.appendChild(row);
+      });
+
+      renderMarkdownPreview();
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // --- EVENT LISTENERS ---
+    tabColors.addEventListener('click', () => switchTab('colors'));
+    tabIcons.addEventListener('click', () => switchTab('icons'));
+
+    colorPicker.addEventListener('input', (e) => {
+      updateActiveColor(e.target.value);
+    });
+
+    hexInput.addEventListener('input', (e) => {
+      const valid = normalizeHex(e.target.value);
+      if (valid) updateActiveColor(valid);
+    });
+
+    document.querySelectorAll('.copy-code-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const formats = getColorFormats(currentHex);
+        copyText(formats[btn.dataset.copyTarget]);
+      });
+    });
+
+    saveColorForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nickname = nicknameInput.value.trim() || currentHex;
+      savedColors.unshift({
+        id: 'c_' + Date.now(),
+        nickname,
+        hex: currentHex
+      });
+      persistColors();
+      renderSavedList();
+      nicknameInput.value = '';
+      showToast(`Saved "${nickname}"`);
+    });
+
+    exportFormat.addEventListener('change', renderMarkdownPreview);
+
+    copyMarkdownBtn.addEventListener('click', () => {
+      copyText(generateMarkdown(), 'Copied Obsidian Markdown!');
+    });
+
+    downloadMarkdownBtn.addEventListener('click', downloadMarkdownFile);
+
+    iconSearchInput.addEventListener('input', () => {
+      iconLimit = 72;
+      renderIcons();
+    });
+
+    tintIconsToggle.addEventListener('change', renderIcons);
+
+    iconLoadMoreBtn.addEventListener('click', () => {
+      iconLimit += 72;
+      renderIcons();
+    });
+
+    // --- INIT ---
+    updateActiveColor(currentHex);
+    renderSavedList();
+  </script>
+</body>
+</html>
